@@ -1,43 +1,61 @@
-import React from 'react';
-import { 
-  StyleSheet,
-  Text,
-  View,
-  Image
-} from 'react-native';
+import React from "react";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
 
-class Header extends React.Component{
-  render({pageTitle} = this.props){
-    return(
-      <View>
-        <Text style={styles.header}>Page Header - {pageTitle} </Text>
-      </View>
-    );
-  } 
+import { StyleSheet, Text, View, Button } from "react-native";
+
+const INCREMENT = "INCREMENT";
+const DECREMENT = "DECREMENT";
+
+function reducer(state = 0, action) {
+  switch (action.type) {
+    case INCREMENT:
+      return state + 1;
+    case DECREMENT:
+      return state - 1;
+    default:
+      return "unclicked";
+  }
 }
+const store = createStore(reducer);
 
 export default class App extends React.Component {
   render() {
+    let title = "title";
     return (
-      <View style={styles.container}>
-        <Header pageTitle="Home"/>
-        <Text>Hello World.</Text>
-      </View>
+      <Provider store={store}>
+        <View style={styles.view}>
+          <Text style={{ flex: 8 }}>
+            Button has been clicked: {store.getState()}
+          </Text>
+          <Button
+            style={styles.button}
+            title="Increment"
+            color="#1c578a"
+            onPress={() => store.dispatch({ type: INCREMENT })}
+          />
+          <Button
+            style={styles.button}
+            title="Decrement"
+            onPress={() => store.dispatch({ type: DECREMENT })}
+          />
+        </View>
+      </Provider>
     );
   }
 }
 
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  view: {
+    flex: 1
   },
-  header: {
-   fontSize: 19,
-   fontWeight: 'bold',
-   fontFamily: 'Roboto'
+  button: {
+    flex: 2,
+    backgroundColor: "#cfd1d5",
+    color: "#cfd1d5",
+    fontSize: 16,
+    marginTop: 4,
+    marginBottom: 4,
+    padding: 10,
   }
 });
